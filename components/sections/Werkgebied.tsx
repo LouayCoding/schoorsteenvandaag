@@ -1,83 +1,61 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { fadeUp, staggerItem, viewportConfig } from "@/lib/animations";
-import { TOP_CITIES } from "@/lib/constants";
+import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
-import { useTranslation } from "@/lib/i18n-context";
+import { TOP_CITIES } from "@/lib/constants";
+import { getStadSlug } from "@/lib/steden";
+import { CONTAINER } from "@/lib/ui";
 
 export default function Werkgebied() {
-  const { t } = useTranslation();
   return (
     <section className="py-20 md:py-28 border-t border-divider">
-      <div className="mx-auto max-w-[1400px] px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+      <div className={CONTAINER}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
           <div>
             <SectionHeader
-              eyebrow={t("werkgebied.eyebrow")}
-              title={t("werkgebied.title")}
-              subtitle={t("werkgebied.subtitle")}
+              eyebrow="Werkgebied"
+              title="Actief door heel Nederland."
+              subtitle="Ons netwerk van vakmensen dekt het hele land — van Groningen tot Maastricht."
               align="left"
             />
 
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.04 } },
-              }}
-              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-8"
-            >
-              {TOP_CITIES.map((city) => (
-                <motion.div key={city} variants={staggerItem}>
-                  <Link
-                    href={`/werkgebied/${city.toLowerCase()}`}
-                    className="text-base text-muted hover:text-foreground transition-colors duration-200"
-                  >
-                    {city}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.p variants={staggerItem} className="col-span-2 text-sm text-muted/60 mt-2">
-                {t("werkgebied.surrounding")}
-              </motion.p>
-            </motion.div>
+            <Reveal>
+              <ul className="flex flex-wrap gap-2.5 mb-8">
+                {TOP_CITIES.map((city) => (
+                  <li key={city}>
+                    <Link
+                      href={`/werkgebied/${getStadSlug(city)}`}
+                      className="inline-block bg-surface border border-divider rounded-full px-4 py-2 text-sm text-foreground transition-colors duration-200 hover:border-accent hover:text-accent"
+                    >
+                      {city}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
 
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={fadeUp}
-            >
+            <Reveal delay={100}>
               <Link
                 href="/werkgebied"
-                className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors duration-200"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent transition-colors"
               >
-                {t("werkgebied.viewAll")}
+                Bekijk alle 383 gemeenten
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </Link>
-            </motion.div>
+            </Reveal>
           </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportConfig}
-            variants={fadeUp}
-            className="relative aspect-[4/3] overflow-hidden rounded"
-            style={{ position: 'relative' }}
-          >
+          <Reveal className="relative aspect-[4/3] overflow-hidden rounded-2xl">
             <Image
-              src="/vogelnest-verwijderen.png"
-              alt="Nederlandse daken en schoorstenen"
+              src="/vogelnest-verwijderen.webp"
+              alt="Schoorsteenveger verwijdert een vogelnest uit een schoorsteen"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
-          </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>

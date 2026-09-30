@@ -1,42 +1,44 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
-import { Poppins, Montserrat } from "next/font/google";
+import { Manrope, Sora } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StickyCTA from "@/components/StickyCTA";
+import CookieConsent from "@/components/CookieConsent";
 import ThemeProvider from "@/components/ThemeProvider";
-import { I18nProvider } from "@/lib/i18n-context";
+import { BASE_URL, COMPANY_NAME, EMAIL, PHONE_NUMBER } from "@/lib/constants";
 import "./globals.css";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
+  themeColor: "#12100e",
 };
-
-const BASE_URL = "https://www.directschoorsteenvegen.nl";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "Schoorsteenservice | Schoorsteen vegen door heel Nederland",
+  title: {
+    default: "Schoorsteen vegen vanaf €39,50 | Schoorsteenservice heel Nederland",
+    template: `%s | ${COMPANY_NAME}`,
+  },
   description:
-    "Professionele schoorsteen-, luchtkanaal- en ventilatieservice door heel Nederland. Schoorsteen vegen vanaf €39,50. Bel direct: 085 060 47 02.",
+    "Professionele schoorsteenveger door heel Nederland. Schoorsteen vegen vanaf €39,50 incl. veegbewijs. Vandaag gebeld, deze week geholpen. Bel 085 115 50 71.",
+  alternates: { canonical: "/" },
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -47,95 +49,67 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    siteName: "Schoorsteenservice",
+    siteName: COMPANY_NAME,
     locale: "nl_NL",
-    title: "Schoorsteenservice | Schoorsteen vegen door heel Nederland",
+    title: "Schoorsteen vegen vanaf €39,50 | Heel Nederland",
     description:
-      "Professionele schoorsteen-, luchtkanaal- en ventilatieservice door heel Nederland. Schoorsteen vegen vanaf €39,50.",
-    images: [{ url: "/heropc.png", width: 1200, height: 630, alt: "Schoorsteenservice Nederland" }],
+      "Professionele schoorsteenveger door heel Nederland. Inclusief veegbewijs voor uw verzekering. Bel 085 115 50 71.",
+    images: [{ url: "/heropc.webp", width: 1200, height: 630, alt: "Schoorsteenveger aan het werk op een Nederlands dak" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Schoorsteenservice | Schoorsteen vegen door heel Nederland",
+    title: "Schoorsteen vegen vanaf €39,50 | Heel Nederland",
     description:
-      "Professionele schoorsteen-, luchtkanaal- en ventilatieservice door heel Nederland. Schoorsteen vegen vanaf €39,50.",
-    images: ["/heropc.png"],
+      "Professionele schoorsteenveger door heel Nederland. Inclusief veegbewijs voor uw verzekering.",
+    images: ["/heropc.webp"],
+  },
+};
+
+const THEME_INIT = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark")t="dark";var d=document.documentElement;d.setAttribute("data-theme",t);d.classList.add("js");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#12100e":"#faf8f4")}catch(e){}})();`;
+
+const LOCAL_BUSINESS_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: COMPANY_NAME,
+  url: BASE_URL,
+  telephone: "+31851155071",
+  email: EMAIL,
+  image: `${BASE_URL}/heropc.webp`,
+  priceRange: "€39,50 - €165",
+  description:
+    "Landelijk netwerk van gecertificeerde schoorsteenvegers. Schoorsteen vegen, camera-inspectie, vogelnest verwijderen en dakreparaties.",
+  areaServed: { "@type": "Country", name: "Nederland" },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "08:00",
+    closes: "18:00",
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="nl">
+    <html lang="nl" data-theme="dark" suppressHydrationWarning>
       <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-PHQN1MJ0FY"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-PHQN1MJ0FY');
-          `}
-        </Script>
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-P8ZGLMP');
-          `}
-        </Script>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
-      <body className={`${poppins.variable} ${montserrat.variable} antialiased`}>
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-P8ZGLMP"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
+      <body className={`${manrope.variable} ${sora.variable} antialiased`}>
+        <a href="#main" className="skip-link">
+          Direct naar inhoud
+        </a>
         <ThemeProvider>
-          <I18nProvider>
-            <Header />
-            <main>{children}</main>
-            <Footer />
-            <StickyCTA />
-          </I18nProvider>
+          <Header />
+          <main id="main">{children}</main>
+          <Footer />
+          <StickyCTA />
+          <CookieConsent />
         </ThemeProvider>
         <Analytics />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              name: "Schoorsteenservice",
-              url: BASE_URL,
-              telephone: "085 060 47 02",
-              email: "info@directschoorsteenvegen.nl",
-              image: `${BASE_URL}/heropc.png`,
-              priceRange: "€€",
-              areaServed: {
-                "@type": "Country",
-                name: "Nederland",
-              },
-              sameAs: [BASE_URL],
-              openingHoursSpecification: {
-                "@type": "OpeningHoursSpecification",
-                dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                opens: "08:00",
-                closes: "18:00",
-              },
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_JSONLD) }}
         />
       </body>
     </html>

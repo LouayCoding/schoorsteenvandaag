@@ -1,83 +1,74 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { fadeUp, staggerItem, viewportConfig } from "@/lib/animations";
-import { SERVICES, PRICING_DISCLAIMER, PHONE_HREF, PHONE_NUMBER } from "@/lib/constants";
+import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
+import FinalCTA from "@/components/sections/FinalCTA";
+import { PRICING_DISCLAIMER } from "@/lib/constants";
+import { SERVICES } from "@/lib/services";
+import { CARD, CONTAINER } from "@/lib/ui";
+
+export const metadata: Metadata = {
+  title: "Tarieven — schoorsteen vegen v.a. €39,50",
+  description:
+    "Alle tarieven op een rij: schoorsteen vegen €39,50, camera-inspectie €139, vogelnest verwijderen €95. Vaste prijzen, exclusief btw, geen verrassingen.",
+  alternates: { canonical: "/tarieven" },
+};
 
 export default function TarievenPage() {
   return (
-    <section className="pt-32 pb-20 md:pt-40 md:pb-28">
-      <div className="mx-auto max-w-[1400px] px-6">
-        <SectionHeader
-          eyebrow="Tarieven"
-          title="Heldere prijzen, geen verrassingen."
-          subtitle="Wat u ziet is wat u betaalt. Alle prijzen zijn exclusief btw."
-        />
+    <>
+      <section className="pt-28 md:pt-36 pb-20 md:pb-24">
+        <div className={CONTAINER}>
+          <SectionHeader
+            eyebrow="Tarieven"
+            title="Heldere prijzen, geen verrassingen."
+            subtitle="Wat u ziet is wat u betaalt. Alle prijzen zijn exclusief btw."
+          />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-divider mb-12"
-        >
-          {SERVICES.map((service) => (
-            <motion.div
-              key={service.slug}
-              variants={staggerItem}
-              className="bg-background p-8 md:p-10"
-            >
-              <Link href={`/diensten/${service.slug}`} className="group block">
-                <h3 className="text-lg font-heading font-semibold mb-2 group-hover:text-accent transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-3xl font-heading font-semibold text-accent mb-6">
-                  €{service.price}
-                  <span className="text-sm font-body text-muted font-normal ml-1">vanaf</span>
-                </p>
-                <ul className="flex flex-col gap-3 mb-4">
-                  {service.details.map((d) => (
-                    <li key={d.label} className="flex items-baseline justify-between text-sm">
-                      <span className="text-muted">{d.label}</span>
-                      <span className="text-foreground font-medium">{d.price}</span>
-                    </li>
-                  ))}
-                </ul>
-                <span className="text-sm text-muted group-hover:text-foreground transition-colors">
-                  Meer info →
-                </span>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+            {SERVICES.map((service, i) => (
+              <Reveal key={service.slug} delay={(i % 3) * 70}>
+                <Link
+                  href={`/diensten/${service.slug}`}
+                  className={`${CARD} group flex flex-col h-full p-7 md:p-8 transition-colors duration-300 hover:border-muted/40`}
+                >
+                  <h2 className="text-lg font-heading font-semibold mb-1 group-hover:text-accent transition-colors">
+                    {service.title}
+                  </h2>
+                  <p className="mb-6">
+                    <span className="text-3xl font-heading font-semibold text-accent">
+                      €{service.price}
+                    </span>
+                    <span className="text-sm text-muted ml-1.5">vanaf</span>
+                  </p>
+                  <ul className="flex flex-col gap-3 flex-1 mb-6">
+                    {service.details.map((d) => (
+                      <li key={d.label} className="flex items-baseline justify-between gap-4 text-sm">
+                        <span className="text-muted">{d.label}</span>
+                        <span className="font-semibold whitespace-nowrap">{d.price}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                    Meer info
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden>
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
 
-        <motion.p
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={fadeUp}
-          className="text-xs text-muted/60 max-w-[65ch] mx-auto text-center leading-relaxed mb-16"
-        >
-          {PRICING_DISCLAIMER}
-        </motion.p>
+          <Reveal>
+            <p className="text-xs text-muted/70 max-w-[65ch] mx-auto text-center leading-relaxed">
+              {PRICING_DISCLAIMER}
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={fadeUp}
-          className="text-center"
-        >
-          <a
-            href={PHONE_HREF}
-            className="inline-flex items-center justify-center bg-accent text-foreground font-medium text-base px-8 py-4 rounded hover:bg-accent-hover transition-colors"
-          >
-            Bel {PHONE_NUMBER}
-          </a>
-        </motion.div>
-      </div>
-    </section>
+      <FinalCTA />
+    </>
   );
 }

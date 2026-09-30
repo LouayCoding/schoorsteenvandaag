@@ -1,62 +1,183 @@
 @import "tailwindcss";
 
+/*
+  Design tokens — warm "ember" palette.
+  Logic: background/surface/elevated are 3 steps of the same warm hue,
+  accent is used for exactly one job: conversion (CTA's, prijzen, actieve staat).
+*/
 @theme {
-  --color-background: #141414;
-  --color-foreground: #f5f5f0;
-  --color-muted: #a0a0a0;
-  --color-surface: #1c1c1c;
-  --color-divider: #2a2a2a;
-  --color-accent: #e8622a;
-  --color-accent-hover: #ff7a3d;
-  --color-accent-muted: rgba(232, 98, 42, 0.12);
-  --font-heading: "Montserrat", system-ui, sans-serif;
-  --font-body: "Poppins", system-ui, sans-serif;
+  --color-background: #12100e;
+  --color-surface: #1a1713;
+  --color-elevated: #211d18;
+  --color-divider: #2b251e;
+  --color-foreground: #f4efe8;
+  --color-muted: #a49a8d;
+  --color-accent: #e85d2c;
+  --color-accent-hover: #f26f3e;
+  --color-accent-ink: #1b0f08;
+  --color-accent-muted: rgba(232, 93, 44, 0.14);
+  --color-success: #6ee7a0;
+  --color-error: #f87171;
+  --font-heading: "Sora", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
 }
 
 [data-theme="light"] {
-  --color-background: #fafaf8;
-  --color-foreground: #1a1a1a;
-  --color-muted: #6b6b6b;
-  --color-surface: #f0eeeb;
-  --color-divider: #e2e0dc;
+  --color-background: #faf8f4;
+  --color-surface: #f1ece4;
+  --color-elevated: #ffffff;
+  --color-divider: #e3dcd1;
+  --color-foreground: #1e1912;
+  --color-muted: #6e6559;
+  --color-accent: #d85120;
+  --color-accent-hover: #c04213;
+  --color-accent-ink: #ffffff;
+  --color-accent-muted: rgba(216, 81, 32, 0.1);
+  --color-success: #15803d;
+  --color-error: #dc2626;
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+/* Secties die in beide thema's donker blijven (foto-overlays) */
+.theme-dark {
+  --color-background: #12100e;
+  --color-surface: #1a1713;
+  --color-elevated: #211d18;
+  --color-divider: #2b251e;
+  --color-foreground: #f4efe8;
+  --color-muted: #a49a8d;
+  --color-accent: #e85d2c;
+  --color-accent-hover: #f26f3e;
+  --color-accent-ink: #1b0f08;
+  --color-accent-muted: rgba(232, 93, 44, 0.14);
 }
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  html[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Accessible focus — never invisible */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-::selection {
+/* Skip-link */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
   background: var(--color-accent);
-  color: #fff;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  color: var(--color-accent-ink);
+  padding: 10px 18px;
+  border-radius: 9999px;
+  font-size: 14px;
   font-weight: 600;
+  transition: top 0.2s ease;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.skip-link:focus {
+  top: 16px;
 }
 
+/* Donker logo leesbaar houden op lichte achtergrond */
+[data-theme="light"] .logo-adaptive {
+  filter: brightness(0.25) saturate(1.4);
+}
+
+/* Entry-animatie voor above-the-fold (pure CSS, geen JS nodig) */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.anim-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-d1 { animation-delay: 80ms; }
+.anim-d2 { animation-delay: 160ms; }
+.anim-d3 { animation-delay: 240ms; }
+.anim-d4 { animation-delay: 320ms; }
+
+/* Native details-accordion */
+details.faq-item > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+details.faq-item > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item > summary .faq-icon {
+  transition: transform 0.3s ease;
+}
+
+details.faq-item[open] > summary .faq-icon {
+  transform: rotate(45deg);
+}
+
+/* Scroll-reveal: alleen actief met JS, nooit permanent onzichtbaar */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* iOS: voorkom zoom bij focus op inputs */
 @media screen and (max-width: 768px) {
   input, select, textarea {
     font-size: 16px !important;
@@ -64,17 +185,23 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
 }
 
-/* iOS: prevent overscroll bounce showing white background */
 @supports (padding: env(safe-area-inset-bottom)) {
   body {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
 }
-

@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { COMPANY_NAME, EMAIL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Privacybeleid",
+  description: "Lees hoe Schoorsteenservice omgaat met uw persoonsgegevens en cookies.",
+  alternates: { canonical: "/privacy" },
+  robots: { index: false },
+};
 
 export default function PrivacyPage() {
   return (
@@ -70,8 +78,10 @@ export default function PrivacyPage() {
               Cookies
             </h2>
             <p>
-              Deze website maakt gebruik van functionele cookies om de website goed 
-              te laten functioneren. Wij gebruiken geen tracking cookies zonder uw toestemming.
+              Deze website gebruikt functionele cookies om goed te werken. Analytische
+              cookies (Google Analytics en Tag Manager) worden pas geladen nadat u
+              hiervoor toestemming geeft via de cookiemelding. U kunt uw keuze
+              wijzigen door de cookies van deze site te verwijderen in uw browser.
             </p>
           </section>
         </div>

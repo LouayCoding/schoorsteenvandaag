@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { COMPANY_NAME, EMAIL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Algemene voorwaarden",
+  description: "De algemene voorwaarden van Schoorsteenservice.",
+  alternates: { canonical: "/voorwaarden" },
+  robots: { index: false },
+};
 
 export default function VoorwaardenPage() {
   return (

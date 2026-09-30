@@ -1,7 +1,5 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { fadeUp, staggerContainer, viewportConfig } from "@/lib/animations";
+import Reveal from "@/components/Reveal";
+import { EYEBROW } from "@/lib/ui";
 
 interface SectionHeaderProps {
   eyebrow: string;
@@ -19,33 +17,14 @@ export default function SectionHeader({
   const alignment = align === "center" ? "text-center items-center" : "text-left items-start";
 
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewportConfig}
-      className={`flex flex-col gap-4 mb-12 md:mb-16 ${alignment}`}
-    >
-      <motion.span
-        variants={fadeUp}
-        className="text-xs uppercase tracking-[0.2em] text-accent font-medium"
-      >
-        {eyebrow}
-      </motion.span>
-      <motion.h2
-        variants={fadeUp}
-        className="text-3xl md:text-4xl lg:text-[2.75rem] font-heading font-semibold max-w-[20ch]"
-      >
+    <Reveal className={`flex flex-col gap-4 mb-12 md:mb-16 ${alignment}`}>
+      <span className={EYEBROW}>{eyebrow}</span>
+      <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-heading font-semibold max-w-[22ch]">
         {title}
-      </motion.h2>
+      </h2>
       {subtitle && (
-        <motion.p
-          variants={fadeUp}
-          className="text-muted text-base md:text-lg max-w-[50ch]"
-        >
-          {subtitle}
-        </motion.p>
+        <p className="text-muted text-base md:text-lg max-w-[52ch]">{subtitle}</p>
       )}
-    </motion.div>
+    </Reveal>
   );
 }

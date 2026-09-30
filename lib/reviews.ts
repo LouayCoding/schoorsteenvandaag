@@ -1,4 +1,12 @@
-export const REVIEWS = [
+export interface Review {
+  name: string;
+  location: string;
+  rating: number;
+  date: string;
+  text: string;
+}
+
+export const REVIEWS: Review[] = [
   {
     name: "Jan van der Berg",
     location: "Amsterdam",

@@ -1,82 +1,76 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { fadeUp, staggerItem, viewportConfig } from "@/lib/animations";
-import { SERVICES, PRICING_DISCLAIMER } from "@/lib/constants";
+import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
+import { PRICING_DISCLAIMER } from "@/lib/constants";
+import { SERVICES } from "@/lib/services";
+import { CARD, CONTAINER } from "@/lib/ui";
 
-const FEATURED = SERVICES.slice(0, 3);
+const FEATURED_SLUGS = ["schoorsteen-vegen", "camera-inspectie", "vogelnest-verwijderen"];
+const FEATURED = SERVICES.filter((s) => FEATURED_SLUGS.includes(s.slug));
 
 export default function PricingTeaser() {
   return (
-    <section className="py-20 md:py-28">
-      <div className="mx-auto max-w-[1400px] px-6">
+    <section className="py-20 md:py-28 border-t border-divider">
+      <div className={CONTAINER}>
         <SectionHeader
           eyebrow="Tarieven"
           title="Heldere prijzen, geen verrassingen."
-          subtitle="Wat u ziet is wat u betaalt. Altijd vooraf duidelijkheid."
+          subtitle="Wat u ziet is wat u betaalt. Altijd vooraf duidelijkheid, nooit verborgen kosten."
         />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-divider mb-10"
-        >
-          {FEATURED.map((service) => (
-            <motion.div
-              key={service.slug}
-              variants={staggerItem}
-              className="bg-background p-8 md:p-10"
-            >
-              <h3 className="text-lg font-heading font-semibold mb-2">
-                {service.title}
-              </h3>
-              <p className="text-3xl font-heading font-semibold text-accent mb-6">
-                €{service.price}
-                <span className="text-sm font-body text-muted font-normal ml-1">
-                  vanaf
-                </span>
-              </p>
-              <ul className="flex flex-col gap-3">
-                {service.details.map((d) => (
-                  <li
-                    key={d.label}
-                    className="flex items-baseline justify-between text-sm"
-                  >
-                    <span className="text-muted">{d.label}</span>
-                    <span className="text-foreground font-medium">
-                      {d.price}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+          {FEATURED.map((service, i) => {
+            const highlight = service.slug === "schoorsteen-vegen";
+            return (
+              <Reveal key={service.slug} delay={i * 80}>
+                <Link
+                  href={`/diensten/${service.slug}`}
+                  className={`${CARD} relative flex flex-col h-full p-7 md:p-8 transition-colors duration-300 hover:border-muted/40 ${
+                    highlight ? "border-accent/50" : ""
+                  }`}
+                >
+                  {highlight && (
+                    <span className="absolute -top-3 left-7 bg-accent text-accent-ink text-xs font-bold px-3 py-1 rounded-full">
+                      Meest gekozen
                     </span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </motion.div>
+                  )}
+                  <h3 className="text-lg font-heading font-semibold mb-1">
+                    {service.title}
+                  </h3>
+                  <p className="mb-6">
+                    <span className="text-3xl font-heading font-semibold text-accent">
+                      €{service.price}
+                    </span>
+                    <span className="text-sm text-muted ml-1.5">vanaf, excl. btw</span>
+                  </p>
+                  <ul className="flex flex-col gap-3 flex-1">
+                    {service.details.map((d) => (
+                      <li key={d.label} className="flex items-baseline justify-between gap-4 text-sm">
+                        <span className="text-muted">{d.label}</span>
+                        <span className="font-semibold whitespace-nowrap">{d.price}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Link>
+              </Reveal>
+            );
+          })}
+        </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={fadeUp}
-          className="flex flex-col items-center gap-4"
-        >
+        <Reveal className="flex flex-col items-center gap-5 text-center">
           <Link
             href="/tarieven"
-            className="text-sm text-muted hover:text-foreground transition-colors duration-200"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent transition-colors"
           >
-            Bekijk alle tarieven →
+            Bekijk alle tarieven
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </Link>
-          <p className="text-xs text-muted/60 max-w-[60ch] text-center leading-relaxed">
+          <p className="text-xs text-muted/70 max-w-[60ch] leading-relaxed">
             {PRICING_DISCLAIMER}
           </p>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

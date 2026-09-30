@@ -3,10 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE_HREF } from "@/lib/constants";
-import { useTranslation } from "@/lib/i18n-context";
 
 export default function StickyCTA() {
-  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -17,6 +15,7 @@ export default function StickyCTA() {
 
   return (
     <div
+      aria-hidden={!visible}
       className={`md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-divider px-4 pt-3 flex gap-3 transition-transform duration-300 ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}
@@ -24,15 +23,17 @@ export default function StickyCTA() {
     >
       <a
         href={PHONE_HREF}
-        className="flex-1 text-center bg-accent text-foreground font-medium text-sm py-3 rounded hover:bg-accent-hover transition-colors"
+        tabIndex={visible ? 0 : -1}
+        className="flex-1 text-center bg-accent text-accent-ink font-semibold text-sm py-3 rounded-full hover:bg-accent-hover transition-colors"
       >
-        {t("stickyCta.call")}
+        Bel nu
       </a>
       <Link
         href="/afspraak"
-        className="flex-1 text-center border border-divider text-foreground font-medium text-sm py-3 rounded hover:border-muted transition-colors"
+        tabIndex={visible ? 0 : -1}
+        className="flex-1 text-center border border-divider text-foreground font-semibold text-sm py-3 rounded-full hover:border-muted transition-colors"
       >
-        {t("stickyCta.appointment")}
+        Afspraak
       </Link>
     </div>
   );

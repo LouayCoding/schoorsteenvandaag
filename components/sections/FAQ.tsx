@@ -1,89 +1,41 @@
-"use client";
-
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { fadeUp, viewportConfig } from "@/lib/animations";
-import { FAQ_ITEMS } from "@/lib/constants";
+import Link from "next/link";
+import FaqList from "@/components/FaqList";
+import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
-import { useTranslation } from "@/lib/i18n-context";
+import { FAQ_ITEMS } from "@/lib/constants";
 
 export default function FAQ() {
-  const { t } = useTranslation();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: FAQ_ITEMS.map((item) => ({
       "@type": "Question",
       name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
   };
 
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-20 md:py-28 border-t border-divider">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <div className="mx-auto max-w-[720px] px-6">
-        <SectionHeader
-          eyebrow={t("faq.eyebrow")}
-          title={t("faq.title")}
-        />
+      <div className="mx-auto max-w-[760px] px-5 md:px-8">
+        <SectionHeader eyebrow="Veelgestelde vragen" title="Vragen? We helpen u graag." />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportConfig}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.06 } },
-          }}
-          className="flex flex-col"
-        >
-          {FAQ_ITEMS.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              className="border-b border-divider"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between py-6 text-left group"
-              >
-                <span className="text-base font-medium pr-8 group-hover:text-accent transition-colors duration-200">
-                  {item.question}
-                </span>
-                <span
-                  className={`text-muted text-xl shrink-0 transition-transform duration-300 ${
-                    openIndex === i ? "rotate-45" : ""
-                  }`}
-                >
-                  +
-                </span>
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
-                  >
-                    <p className="text-sm text-muted leading-relaxed pb-6 max-w-[55ch]">
-                      {item.answer}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </motion.div>
+        <Reveal>
+          <FaqList items={FAQ_ITEMS} />
+        </Reveal>
+
+        <Reveal className="text-center mt-10">
+          <p className="text-sm text-muted">
+            Staat uw vraag er niet bij?{" "}
+            <Link href="/contact" className="text-accent font-semibold hover:underline">
+              Neem contact op
+            </Link>
+          </p>
+        </Reveal>
       </div>
     </section>
   );

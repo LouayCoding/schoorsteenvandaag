@@ -1,97 +1,77 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { fadeUp, viewportConfig } from "@/lib/animations";
+import Reveal from "@/components/Reveal";
 import { PHONE_HREF, PHONE_NUMBER } from "@/lib/constants";
-import { useTranslation } from "@/lib/i18n-context";
+import { BTN_MD, BTN_PRIMARY, CONTAINER, EYEBROW } from "@/lib/ui";
 
-const STEP_KEYS = ["step1", "step2", "step3"];
-const STEP_NUMBERS = ["01", "02", "03"];
+const STEPS = [
+  {
+    title: "Bel of plan online",
+    description:
+      "Bel ons of vul het formulier in. U hoort binnen 24 uur wanneer we langskomen.",
+  },
+  {
+    title: "Wij komen langs",
+    description:
+      "Een gecertificeerde vakman komt op de afgesproken dag. Vooraf weet u exact wat het kost.",
+  },
+  {
+    title: "Klaar en veilig",
+    description:
+      "Alles schoon opgeleverd, inclusief veegbewijs voor uw verzekering.",
+  },
+];
 
 export default function HowItWorks() {
-  const { t } = useTranslation();
   return (
     <section className="py-20 md:py-28 border-t border-divider">
-      <div className="mx-auto max-w-[1400px] px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportConfig}
-            variants={fadeUp}
-            className="relative aspect-[4/5] overflow-hidden rounded order-2 lg:order-1"
-            style={{ position: 'relative' }}
-          >
+      <div className={CONTAINER}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+          <Reveal className="relative aspect-[4/5] overflow-hidden rounded-2xl order-2 lg:order-1">
             <Image
-              src="/camera-inspectie.png"
-              alt="Schoorsteenveger aan het werk"
+              src="/camera-inspectie.webp"
+              alt="Schoorsteenveger voert camera-inspectie uit bij een houtkachel"
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-          </motion.div>
+          </Reveal>
 
           <div className="order-1 lg:order-2">
-            <motion.span
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={fadeUp}
-              className="inline-block text-xs uppercase tracking-[0.2em] text-accent font-medium mb-4"
-            >
-              {t("howItWorks.eyebrow")}
-            </motion.span>
-            <motion.h2
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={fadeUp}
-              className="text-3xl md:text-4xl font-heading font-semibold mb-12"
-            >
-              {t("howItWorks.title")}
-            </motion.h2>
+            <Reveal>
+              <span className={`${EYEBROW} mb-4`}>Zo werkt het</span>
+              <h2 className="text-3xl md:text-4xl font-heading font-semibold mb-12">
+                In drie stappen geregeld.
+              </h2>
+            </Reveal>
 
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.12 } },
-              }}
-              className="flex flex-col gap-10 mb-10"
-            >
-              {STEP_KEYS.map((key, i) => (
-                <motion.div key={key} variants={fadeUp} className="flex gap-6">
-                  <span className="text-3xl font-heading font-semibold text-accent/30 shrink-0">
-                    {STEP_NUMBERS[i]}
-                  </span>
-                  <div>
-                    <h3 className="text-base font-heading font-semibold mb-1.5">
-                      {t(`howItWorks.steps.${key}.title`)}
-                    </h3>
-                    <p className="text-sm text-muted leading-relaxed">
-                      {t(`howItWorks.steps.${key}.description`)}
-                    </p>
-                  </div>
-                </motion.div>
+            <ol className="flex flex-col gap-0 mb-10">
+              {STEPS.map((step, i) => (
+                <Reveal key={step.title} delay={i * 90}>
+                  <li className="relative flex gap-5 pb-10 last:pb-0">
+                    {i < STEPS.length - 1 && (
+                      <span className="absolute left-[19px] top-11 bottom-1 w-px bg-divider" aria-hidden />
+                    )}
+                    <span className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-muted text-accent font-heading font-semibold text-sm shrink-0">
+                      {i + 1}
+                    </span>
+                    <div className="pt-1.5">
+                      <h3 className="text-base font-heading font-semibold mb-1.5">
+                        {step.title}
+                      </h3>
+                      <p className="text-sm text-muted leading-relaxed max-w-[45ch]">
+                        {step.description}
+                      </p>
+                    </div>
+                  </li>
+                </Reveal>
               ))}
-            </motion.div>
+            </ol>
 
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportConfig}
-              variants={fadeUp}
-            >
-              <a
-                href={PHONE_HREF}
-                className="inline-flex items-center justify-center bg-accent text-foreground font-medium text-sm px-6 py-3 rounded hover:bg-accent-hover transition-colors"
-              >
-                {t("howItWorks.callButton", { phone: PHONE_NUMBER })}
+            <Reveal delay={200}>
+              <a href={PHONE_HREF} className={`${BTN_PRIMARY} ${BTN_MD}`}>
+                Bel {PHONE_NUMBER}
               </a>
-            </motion.div>
+            </Reveal>
           </div>
         </div>
       </div>
